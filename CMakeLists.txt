@@ -15,14 +15,14 @@ add_library(LBP
 	LBP.cpp
 )
 target_link_libraries(LBP
-	
+	${OpenCV_LIBS} ${FFTW_LIBRARY} m
 )
 
 add_executable(LBPTest
 	LBPTest.cpp
 )
 target_link_libraries(LBPTest
-	LBP opencv_core opencv_imgproc opencv_highgui fftw3 m
+	LBP
 )
 
 option(BUILD_PYTHON "Build SWIG/Python module" OFF)
