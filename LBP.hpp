@@ -44,8 +44,12 @@
 #ifndef _LBP_H_
 #define _LBP_H_
 
+// SWIG doesn't understand 'using' directives properly
+// so disable them if doing the SWIG pass
+#ifndef SWIG
 using namespace std;
 using namespace cv;
+#endif
 
 // enable/disable use of mixed OpenCV API in the code below.
 #define DEMO_MIXED_API_USE 0
