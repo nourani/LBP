@@ -1,44 +1,35 @@
 # LBP
-
 cmake_minimum_required(VERSION 2.8)
 
 # project name
-PROJECT(NOURANI)
+project(LBP)
 
-SET(CMAKE_INSTALL_PREFIX "$ENV{HOME}/proj/acfr/nourani")
-#SET(CMAKE_CXX_COMPILER "g++-3.4")
-#SET(CMAKE_CXX_LINKER "g++-3.4")
-
-INCLUDE_DIRECTORIES(
-	./
-	/usr/local/include
-	/opt/local/include
-)
-
-LINK_DIRECTORIES(
-	/usr/local/lib
-	/opt/local/lib
-)
-
-ADD_DEFINITIONS( -ggdb -O3 -D_x86 -D_OSX )
+# find dependencies 
+find_path(FFTW_INCLUDE_DIR fftw3.h  ${FFTW_INCLUDE_DIRS})
+find_library(FFTW_LIBRARY fftw3 ${FFTW_LIBRARY_DIRS})
+find_package(OpenCV REQUIRED)
 
 
-
-ADD_LIBRARY(LBP
-	STATIC
+add_library(LBP
+    SHARED
 	LBP.cpp
 )
-TARGET_LINK_LIBRARIES(LBP
+target_link_libraries(LBP
 	
 )
 
-
-ADD_EXECUTABLE(LBPTest
+add_executable(LBPTest
 	LBPTest.cpp
 )
-TARGET_LINK_LIBRARIES(LBPTest
+target_link_libraries(LBPTest
 	LBP opencv_core opencv_imgproc opencv_highgui fftw3 m
 )
+
+option(BUILD_PYTHON "Build SWIG/Python module" OFF)
+if(BUILD_PYTHON)
+    add_subdirectory(python)
+endif(BUILD_PYTHON)
+
 
 ###############################################################################
 ## 								Install
