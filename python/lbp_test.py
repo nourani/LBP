@@ -1,15 +1,14 @@
 import cv2
 import numpy as np
-import sys
-
-sys.path.insert(0, '/home/pmor6790/Code/External/LBP/build/python')
-
+import os
 import lbp
 
 
 if __name__ == '__main__':
 
-    img = cv2.imread('../../test_image_1.bmp', 0)
+    filename = os.path.join(os.path.dirname(__file__), '../test_image_1.bmp')
+
+    img = cv2.imread(filename, 0)
     img = img.astype(np.float64)
 
     l = lbp.LBP(8, lbp.LBP_MAPPING_HF)
