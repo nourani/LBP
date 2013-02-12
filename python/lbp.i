@@ -8,6 +8,9 @@
 %include "numpy.i"
 %include exception.i
 
+/* Add documentation */
+%feature("autodoc", "2");
+
 %init %{
     import_array();
 %}
