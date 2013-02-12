@@ -34,12 +34,12 @@ endif(BUILD_PYTHON)
 ###############################################################################
 ## 								Install
 # Binaries and libs
-#INSTALL(TARGETS CopyFiles
+install(TARGETS LBP
 #	RUNTIME DESTINATION bin
-#	LIBRARY DESTINATION lib
+	LIBRARY DESTINATION lib
 #	ARCHIVE DESTINATION lib
-#)
+)
 # Header files
-#INSTALL(FILES 
+#install(FILES lbp.hpp
 #	DESTINATION include/apps
 #)
