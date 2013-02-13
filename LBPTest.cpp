@@ -56,9 +56,10 @@ void example_1( void ) {
  */
 void example_2( void ) {
 	// Read an (RGB) image and convert to monochrome
-	cv::Mat img = imread( "./test_image_1.bmp", 0 );
+	cv::Mat img = imread( "/Users/navid/proj/LBP/test_image_1.bmp", 0 );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
+    
 
 	// Create an LBP instance of type rotation invariant uniform 2 using 8 support points
 	LBP lbp( 8, LBP_MAPPING_RIU2 );
@@ -91,11 +92,27 @@ int main( int argc, char ** argv ) {
 
 	clock_t startTime, endTime;
 
-	startTime = clock();
-	example_2();
+//	startTime = clock();
+//	example_2();
+//	endTime = clock();
+//	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+//				<< endl;
+    
+    LBP lbp( 16, LBP_MAPPING_U2 );
+    cout << lbp.toString() << endl;
+    startTime = clock();
+    lbp.saveMapping( "mapping.txt" );
 	endTime = clock();
-	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+	cout << "save took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;
+
+    LBP lbp2;
+    startTime = clock();
+    lbp2.loadMapping("mapping.txt");
+    endTime = clock();
+    cout << lbp2.toString() << endl;
+    cout << "load took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+    << endl;
 
 	return 0;
 }
