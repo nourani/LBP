@@ -35,7 +35,7 @@ set_source_files_properties(lbp.i PROPERTIES CPLUSPLUS ON)
 swig_add_module(lbp python lbp.i ../LBP.cpp)
 swig_link_libraries(lbp 
     ${PYTHON_LIBRARIES} 
-    ${OpenCV_LIBRARIES} 
+    ${OpenCV_LIBS} 
     ${FFTW_LIBRARY}
 )
 
