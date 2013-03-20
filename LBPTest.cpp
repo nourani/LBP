@@ -41,14 +41,17 @@ void example_1( void ) {
 	// Calculate the descriptor
 	lbp.calcLBP( img );
 	// Calculate Fourier tranformed histogram
-	vector<double> hist = lbp.calcHist().getHist();
+	vector<double> hist = lbp.calcHist().getHist( false );
 
 	// Print out the histogram values
+	double sum = 0;
 	cout << "hist = [";
 	for( int i = 0; i < hist.size(); i++ ) {
 		cout << hist[i] << ", ";
+		sum += hist[i];
 	}
 	cout << "]; " << endl;
+	cout << "hist sum=" << sum << endl;
 }
 
 /**
@@ -88,24 +91,21 @@ void example_2( void ) {
 
 }
 
-int main( int argc, char ** argv ) {
-
+/** 
+ * Calculate a mapping, save it and load it. This is especially useful for 
+ *	larger mappings (24 pts) which can takes many seconds to calculate.
+ */
+void example_3( void ) {
 	clock_t startTime, endTime;
-
-//	startTime = clock();
-//	example_2();
-//	endTime = clock();
-//	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
-//				<< endl;
-    
-    LBP lbp( 16, LBP_MAPPING_U2 );
+	
+	LBP lbp( 16, LBP_MAPPING_U2 );
     cout << lbp.toString() << endl;
     startTime = clock();
     lbp.saveMapping( "mapping.txt" );
 	endTime = clock();
 	cout << "save took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
-				<< endl;
-
+	<< endl;
+	
     LBP lbp2;
     startTime = clock();
     lbp2.loadMapping("mapping.txt");
@@ -114,6 +114,19 @@ int main( int argc, char ** argv ) {
     cout << "load took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
     << endl;
 
+	
+}
+int main( int argc, char ** argv ) {
+
+	clock_t startTime, endTime;
+
+	startTime = clock();
+	example_1();
+	endTime = clock();
+	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+				<< endl;
+    
+    
 	return 0;
 }
 

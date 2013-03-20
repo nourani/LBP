@@ -455,7 +455,7 @@ vector<double> LBP::getHist( bool norm ) {
 	Scalar sum( 1 );
     
 	// normalization value
-	if( norm || type != LBP_MAPPING_HF ) {
+	if( norm || type == LBP_MAPPING_HF ) {
 		sum = cv::sum( hist );
 	}
     
