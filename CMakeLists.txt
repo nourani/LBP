@@ -40,6 +40,6 @@ install(TARGETS LBP
 #	ARCHIVE DESTINATION lib
 )
 # Header files
-#install(FILES lbp.hpp
-#	DESTINATION include/apps
-#)
+install(FILES lbp.hpp
+	DESTINATION include 
+)
