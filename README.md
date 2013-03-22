@@ -1,7 +1,7 @@
 LBP
 ===
 
-C++ implementation of the Local Binary Pattern (LBP) texture descriptors with Python bindings. 
+C++ (with Python wrapper) implementation of the Local Binary Pattern (LBP) texture descriptors with Python bindings. 
 
 A simple single-class interface, which integrates with OpenCV and FFTW3 to bring a complete and fast implementation of the popular descriptors: LBP u2, ri, riu2 &amp; hf. 
 

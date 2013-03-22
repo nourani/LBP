@@ -413,7 +413,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
     //	cout << "mapping took " << times.back() << " cycles" << endl;
     
 	// Store the final result
-	lbpImage = result;
+	lbpImage = result.clone();
     
 	return *this;
 }
