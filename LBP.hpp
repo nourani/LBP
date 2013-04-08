@@ -38,8 +38,9 @@
 
 #include <fftw3.h>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #ifndef _LBP_H_
 #define _LBP_H_
@@ -59,13 +60,17 @@ using namespace cv;
 namespace lbp {
     
 	enum MappingType {
-		LBP_MAPPING_NONE = 0, LBP_MAPPING_U2, LBP_MAPPING_RI, LBP_MAPPING_RIU2, LBP_MAPPING_HF
+		LBP_MAPPING_NONE = 0,
+		LBP_MAPPING_U2,
+		LBP_MAPPING_RI,
+		LBP_MAPPING_RIU2,
+		LBP_MAPPING_HF
 	};
     
-	static const string MappingTypeStr[] = { "none", "u2", "ri", "riu2", "hf" };
+	static const string MappingTypeStr[] = {
+				"none", "u2", "ri", "riu2", "hf" };
     
 	class LBP {
-        
         
 	public:
 		LBP();
@@ -77,7 +82,7 @@ namespace lbp {
 		 */
 		LBP & generateMapping();
 		LBP & generateMapping( unsigned int samples, MappingType type );
-		// TODO: Implement load and load functions
+
 		bool saveMapping( string fileName );
 		bool loadMapping( string fileName );
         
@@ -103,6 +108,7 @@ namespace lbp {
 			return lbpImage;
 		}
         
+		bool saveLBPImage( string fileName );
 		/**
 		 * Histogram methods
 		 */

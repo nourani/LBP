@@ -418,6 +418,9 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
 	return *this;
 }
 
+bool LBP::saveLBPImage( string fileName ) {
+	return cv::imwrite( fileName, this->lbpImage );
+}
 /** ******************************************************************
  *
  * Histogram part
