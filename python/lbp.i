@@ -35,6 +35,21 @@ Mat
     Mat mat(dims[0], dims[1], CV_64FC1, data);
     $1 = mat;
 }
+%typemap(out, fragment="NumPy_Object_to_Array,NumPy_Array_Requirements") 
+Mat
+{ 
+    /* Must be 2d image */
+    if($1.dims != 2)
+        SWIG_fail;
+
+    /* Create a new numpy array for output. */
+    npy_intp dims[2] = { $1.rows, $1.cols };
+    PyObject * array = PyArray_SimpleNew(2, dims, NPY_UINT8);
+
+    /* Copy the OpenCV data into the numpy array */
+    memcpy(PyArray_BYTES(array), $1.data, dims[0] * dims[1]);
+    $result = array;
+}
 
 
 /*
