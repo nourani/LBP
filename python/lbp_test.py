@@ -17,3 +17,4 @@ if __name__ == '__main__':
     hist = l.calcHist().getHist()
 
     print(hist)
+    print(l.getLBPImage())
