@@ -114,7 +114,7 @@ namespace lbp {
 		 */
 		LBP & calcHist(void);
 		LBP & calcHist( Mat mask );
-		LBP & calcHist( Mat * img, Mat * mask=NULL );
+
 		vector<double> getHist( bool norm = true );
 		vector<double> constructHF( vector<double> h );
         
@@ -164,6 +164,8 @@ namespace lbp {
         }
         
         void initHF(void);
+
+        LBP & calcHist( Mat * img, Mat * mask=NULL );
 	};
     
 }
