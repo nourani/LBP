@@ -429,6 +429,9 @@ bool LBP::saveLBPImage( string fileName ) {
 LBP & LBP::calcHist( void ) {
 	return calcHist( &lbpImage );
 }
+LBP & LBP::calcHist( Mat mask ) {
+	return calcHist( &lbpImage, &mask );
+}
 LBP & LBP::calcHist( Mat * lbpImg, Mat * mask ) {
     
 	if( lbpImg == NULL ) {
