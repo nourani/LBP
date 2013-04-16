@@ -21,7 +21,9 @@
  */
 
 #include <iostream>
-#include <opencv/cv.h>
+#include <ctime>
+
+#include <opencv2/opencv.hpp>
 
 #include "LBP.hpp"
 
@@ -59,7 +61,7 @@ void example_1( void ) {
  */
 void example_2( void ) {
 	// Read an (RGB) image and convert to monochrome
-	cv::Mat img = imread( "/Users/navid/proj/LBP/test_image_1.bmp", 0 );
+	cv::Mat img = imread( "../test_image_1.bmp", CV_LOAD_IMAGE_GRAYSCALE );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
     
@@ -69,17 +71,25 @@ void example_2( void ) {
 	// Calculate the descriptor image and get it
 	Mat lbpImg = lbp.calcLBP( img ).getLBPImage();
 
+	// Create a mask same size as the image
+	Mat mask( lbpImg.rows, lbpImg.cols, CV_8UC1 );
+
 	// Get the histogram for sub-images
 	for( int j = 0; j < 2; j++ ) {
 		for( int i = 0; i < 2; i++ ) {
-			// Get a sub-image the size of 1/4 of the whole image
+			// Reset mask. Will actually not allocate the data as it is
+			// 		same size as before.
+			mask = Mat::zeros(lbpImg.rows, lbpImg.cols, CV_8UC1);
+			// Get a sub-image (ROI) the size of 1/4 of the whole image
 			int x = lbpImg.cols / 2 * i;
 			int y = lbpImg.rows / 2 * j;
 			int w = lbpImg.cols/2-2;
 			int h = lbpImg.rows/2-2;
-			Mat subImg( lbpImg, Range(y,y+h), Range(x,x+w) );
+			Mat roi( mask, Range(y,y+h), Range(x,x+w) );
+			roi = Scalar(255);
+			// Calculate histogram for the ROI
+			vector<double> hist = lbp.calcHist( mask ).getHist();
 
-			vector<double> hist = lbp.calcHist( &subImg ).getHist();
 			// Print out the histogram values
 			cout << "hist(" << j << "," << i << ") = [";
 			for( int i = 0; i < hist.size(); i++ ) {
@@ -121,7 +131,7 @@ int main( int argc, char ** argv ) {
 	clock_t startTime, endTime;
 
 	startTime = clock();
-	example_1();
+	example_2();
 	endTime = clock();
 	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;
