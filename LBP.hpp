@@ -26,7 +26,6 @@
  *
  */
 
-#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -39,11 +38,14 @@
 #include <fftw3.h>
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+
 
 #ifndef _LBP_H_
 #define _LBP_H_
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 // SWIG doesn't understand 'using' directives properly
 // so disable them if doing the SWIG pass
