@@ -35,6 +35,18 @@ Mat
     Mat mat(dims[0], dims[1], CV_64FC1, data);
     $1 = mat;
 }
+%typemap(in, fragment="NumPy_Object_to_Array,NumPy_Array_Requirements") 
+Mat 
+{ 
+    PyArrayObject* ary = obj_to_array_no_conversion($input, NPY_UINT8);
+    if(!ary || !require_contiguous(ary) || !require_dimensions(ary, 2)) 
+        SWIG_fail;
+
+    unsigned char *data = (unsigned char *)array_data(ary); 
+    npy_intp* dims = array_dimensions(ary);
+    Mat mat(dims[0], dims[1], CV_8UC1, data);
+    $1 = mat;
+}
 %typemap(out, fragment="NumPy_Object_to_Array,NumPy_Array_Requirements") 
 Mat
 { 

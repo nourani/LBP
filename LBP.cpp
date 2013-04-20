@@ -288,11 +288,16 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
     //	namedWindow( "lbp", 0 );
     //	Mat dummy( 300, 260, CV_8UC1);
     
-	// Make sure the image has Double precision version
+    // Make sure the image has Double precision version
 	if( d_img.type() < CV_64F ) {
 		d_img.convertTo( d_img, CV_64F );
 	}
-    
+
+	// Make a copy of the image border the same size as the radius
+	Mat tmp( d_img.rows+2*radius, d_img.cols+2*radius, CV_64F );
+	copyMakeBorder( d_img, tmp, radius, radius, radius, radius, 2 );
+	d_img = tmp.clone();	
+	    
 	double spoints[samples][2];
 	double a = 2 * M_PI / samples;
 	double miny = +INT_MAX;
