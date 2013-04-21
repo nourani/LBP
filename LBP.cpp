@@ -296,7 +296,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 	// Make a copy of the image border the same size as the radius
 	if( borderCopy ) {
 		Mat tmp( d_img.rows+2*radius, d_img.cols+2*radius, CV_64F );
-		copyMakeBorder( d_img, tmp, radius, radius, radius, radius, BORDER_REFLECT_101, Scalar(0) );
+		copyMakeBorder( d_img, tmp, radius, radius, radius, radius, BORDER_WRAP, Scalar(0) );
 		d_img = tmp.clone();
 	}
 	    
