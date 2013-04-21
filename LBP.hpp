@@ -105,7 +105,7 @@ namespace lbp {
 		/**
 		 * Descriptor methods
 		 */
-		LBP & calcLBP( Mat img, double radius = 1. );
+		LBP & calcLBP( Mat img, double radius = 1., bool borderCopy=false );
 		Mat getLBPImage( void ) const {
 			return lbpImage;
 		}

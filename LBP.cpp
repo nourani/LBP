@@ -280,7 +280,7 @@ bool LBP::loadMapping( string fileName ) {
  * Descriptor part
  *
  */
-LBP & LBP::calcLBP( Mat d_img, double radius ) {
+LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
     
     //	clock_t startTime, endTime, sT, eT;
     //	vector<double> times;
@@ -292,11 +292,13 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
 	if( d_img.type() < CV_64F ) {
 		d_img.convertTo( d_img, CV_64F );
 	}
-
+ 
 	// Make a copy of the image border the same size as the radius
-	Mat tmp( d_img.rows+2*radius, d_img.cols+2*radius, CV_64F );
-	copyMakeBorder( d_img, tmp, radius, radius, radius, radius, 2 );
-	d_img = tmp.clone();	
+	if( borderCopy ) {
+		Mat tmp( d_img.rows+2*radius, d_img.cols+2*radius, CV_64F );
+		copyMakeBorder( d_img, tmp, radius, radius, radius, radius, BORDER_REFLECT_101, Scalar(0) );
+		d_img = tmp.clone();
+	}
 	    
 	double spoints[samples][2];
 	double a = 2 * M_PI / samples;
@@ -345,10 +347,10 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
     
 	// Initialize the result matrix with zeros.
 	Mat result( dy, dx, CV_64FC1);
-	result.zeros( result.size(), 0 );
+	result = Mat::zeros( dy, dx, CV_64FC1 );
 	Mat D( dy, dx, CV_64FC1);
 	Mat N( dy, dx, CV_64FC1);
-    
+	
 	// Compute the LBP code image
     //	startTime = clock();
 	for( int i = 0; i < samples; i++ ) {
@@ -398,6 +400,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
 		double v = pow( 2., i ) / 255.; // Divide by 255 because D is 0/255 rather than 0/1
 		D.convertTo( D, CV_64F );
 		result = result + (v * D);
+		
 	}
 	result.convertTo( result, CV_8U );
     //	endTime = clock();
@@ -419,7 +422,15 @@ LBP & LBP::calcLBP( Mat d_img, double radius ) {
     
 	// Store the final result
 	lbpImage = result.clone();
-    
+	#if 0
+    for( int j = 0; j < lbpImage.rows; j++ ) {
+		for( int i = 0; i < lbpImage.cols; i++ ) {
+			//cout.width(3);
+			cout << int(lbpImage.at<unsigned char>(j,i)) << " ";
+		}
+		cout << endl;
+	}
+	#endif
 	return *this;
 }
 
