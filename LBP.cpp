@@ -73,7 +73,13 @@ LBP & LBP::generateMapping( unsigned int samples, MappingType type ) {
 	int newMax = 0; //number of patterns in the resulting LBP code
 	int index = 0;
     
-	if( type == LBP_MAPPING_U2 ) {
+	if( type == LBP_MAPPING_NONE ) {
+		newMax = (int) pow( 2., (int) samples );
+		for( unsigned int i = 0; i < newMax; i++ ) {
+			table.push_back(i);
+		}
+	}
+	else if( type == LBP_MAPPING_U2 ) {
 		// Uniform 2
 		newMax = samples * (samples - 1) + 3;
         
@@ -176,6 +182,10 @@ LBP & LBP::generateMapping( unsigned int samples, MappingType type ) {
 		orbits.push_back( o );
 		o[0] = newMax - 1;
 		orbits.push_back( o );
+	}
+	else {
+		cerr << "Unknown mapping!" << endl;
+		exit(1);
 	}
     
 	this->num = newMax;
