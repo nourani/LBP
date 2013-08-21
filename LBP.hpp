@@ -102,6 +102,10 @@ namespace lbp {
                 return LBP_MAPPING_NONE;
         }
         
+        MappingType getMapping(void) const {
+        	return type;
+        }
+
 		/**
 		 * Descriptor methods
 		 */

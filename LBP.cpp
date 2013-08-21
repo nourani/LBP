@@ -111,7 +111,7 @@ LBP & LBP::generateMapping( unsigned int samples, MappingType type ) {
 		long N = (int) pow( 2., (int) samples );
 		// Rotation Invariant
 		int * tmpMap = new int[N];
-		memset( tmpMap, -1, N );
+		memset( (void *)tmpMap, -1, N );
         
 		for( unsigned long i = 0; i < N; i++ ) {
 			tmpMap[i] = -1;
@@ -189,7 +189,7 @@ LBP & LBP::generateMapping( unsigned int samples, MappingType type ) {
 	}
     
 	this->num = newMax;
-    
+
 	return *this;
 }
 

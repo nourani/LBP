@@ -33,13 +33,16 @@ using namespace lbp;
  * Load and image and calculate the LBP-HF descriptor for the whole image
  */
 void example_1( void ) {
+	cout << endl << "Example 1..." << endl;
+
 	// Read an (RGB) image and convert to monochrome
-	cv::Mat img = imread( "./test_image_1.bmp", 0 );
+	cv::Mat img = imread( "../test_image_1.pgm", 0 );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
+	cout << "image w/h = " << img.rows << "/" << img.cols << " (" << img.rows*img.cols << ")" << endl;
 
 	// Create an LBP instance of type HF using 8 support points
-	LBP lbp( 8, LBP_MAPPING_HF );
+	LBP lbp( 8, LBP_MAPPING_NONE );
 	// Calculate the descriptor
 	lbp.calcLBP( img );
 	// Calculate Fourier tranformed histogram
@@ -131,7 +134,7 @@ int main( int argc, char ** argv ) {
 	clock_t startTime, endTime;
 
 	startTime = clock();
-	example_2();
+	example_1();
 	endTime = clock();
 	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;

@@ -25,6 +25,13 @@ target_link_libraries(LBPTest
 	LBP
 )
 
+add_executable(LBPMain
+	LBPMain.cpp
+)
+target_link_libraries(LBPMain
+	LBP
+)
+
 option(BUILD_PYTHON "Build SWIG/Python module" OFF)
 if(BUILD_PYTHON)
     add_subdirectory(python)
