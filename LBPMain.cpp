@@ -22,14 +22,15 @@ int main( int argc, char ** argv ) {
 	string outFilename = "";
 	bool outputHist = false;
 
-	if( argc == 1 ) {
+	if( argc <= 2 ) {
 		cout << "\nUsage: ./LBPMain [options] filename" << endl;
 		cout << "\nOptions:" << endl;
 		cout << "\t-r <int> - Radius (default=1)" << endl;
 		cout << "\t-p <int> - Number of support points (default=8)" << endl;
 		cout << "\t-m <string> - Mapping choose between: (default=none)" << endl;
 		cout << "\t\tu2\n" << "\t\tri\n" << "\t\triu2\n" << "\t\thf" << endl;
-		cout << "\t-o <string> - Output filename (default=filename_LBP.png)" << endl;
+		cout << "\t-o <string> - Output filename (default=filename_LBPm_r_p.png, " <<
+					"where m,r,p correspond to mapping, radius and points.)" << endl;
 		cout << "\t-h - Output histogram instead of LBP image" << endl;
 		exit( 1 );
 	}
@@ -98,6 +99,7 @@ int main( int argc, char ** argv ) {
 		ofstream ofs;
 		ofs.open( outFilename.c_str(), ios::out );
 		ofs << "testing\n";
+		cerr << "NotImplementedError:No support for saving histograms" << endl;
 	}
 	else {
 		lbp.saveLBPImage( outFilename );

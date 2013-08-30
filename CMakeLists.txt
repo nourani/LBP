@@ -41,8 +41,8 @@ endif(BUILD_PYTHON)
 ###############################################################################
 ## 								Install
 # Binaries and libs
-install(TARGETS LBP
-#	RUNTIME DESTINATION bin
+install(TARGETS LBP LBPMain
+	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib
 #	ARCHIVE DESTINATION lib
 )
