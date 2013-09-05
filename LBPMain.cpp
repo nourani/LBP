@@ -13,6 +13,19 @@
 using namespace std;
 using namespace lbp;
 
+void printHelp() {
+	cout << "\nUsage: ./LBPMain [options] filename" << endl;
+	cout << "\nOptions:" << endl;
+	cout << "\t-r <int> - Radius (default=1)" << endl;
+	cout << "\t-p <int> - Number of support points (default=8)" << endl;
+	cout << "\t-m <string> - Mapping choose between: (default=none)" << endl;
+	cout << "\t\tu2\n" << "\t\tri\n" << "\t\triu2\n" << "\t\thf" << endl;
+	cout << "\t-o <string> - Output filename (default=filename_LBPm_r_p.png, "
+				<< "where m,r,p correspond to mapping, radius and points.)" << endl;
+	cout << "\t-h - Output histogram instead of LBP image" << endl;
+	cout << "\t-hn - Output normalized histogram instead of LBP image" << endl;
+}
+
 int main( int argc, char ** argv ) {
 
 	int rad = 1;
@@ -20,18 +33,10 @@ int main( int argc, char ** argv ) {
 	string mapping = "";
 	string fileName = "";
 	string outFilename = "";
-	bool outputHist = false;
+	bool outputHist = false, normalizeHist = false;
 
 	if( argc <= 2 ) {
-		cout << "\nUsage: ./LBPMain [options] filename" << endl;
-		cout << "\nOptions:" << endl;
-		cout << "\t-r <int> - Radius (default=1)" << endl;
-		cout << "\t-p <int> - Number of support points (default=8)" << endl;
-		cout << "\t-m <string> - Mapping choose between: (default=none)" << endl;
-		cout << "\t\tu2\n" << "\t\tri\n" << "\t\triu2\n" << "\t\thf" << endl;
-		cout << "\t-o <string> - Output filename (default=filename_LBPm_r_p.png, " <<
-					"where m,r,p correspond to mapping, radius and points.)" << endl;
-		cout << "\t-h - Output histogram instead of LBP image" << endl;
+		printHelp();
 		exit( 1 );
 	}
 	else if( argc > 2 ) {
@@ -39,30 +44,31 @@ int main( int argc, char ** argv ) {
 		for( int i = 1; i < argc - 1; i++ ) {
 			if( strcmp( argv[i], "-r" ) == 0 ) {
 				rad = atoi( argv[i + 1] );
-				cout << "rad=" << rad << endl;
 				i++;
 			}
 			else if( strcmp( argv[i], "-p" ) == 0 ) {
 				pts = atoi( argv[i + 1] );
-				cout << "pts=" << pts << endl;
 				i++;
 			}
 			else if( strcmp( argv[i], "-m" ) == 0 ) {
 				mapping = argv[i + 1];
-				cout << "mapping=" << mapping << endl;
 				i++;
 			}
 			else if( strcmp( argv[i], "-o" ) == 0 ) {
 				outFilename = argv[i + 1];
-				cout << "outFilename=" << outFilename << endl;
 				i++;
 			}
 			else if( strcmp( argv[i], "-h" ) == 0 ) {
 				outputHist = true;
-				cout << "outputHist=" << outputHist << endl;
+			}
+			else if( strcmp( argv[i], "-hn" ) == 0 ) {
+				outputHist = true;
+				normalizeHist = true;
 			}
 			else {
 				cerr << "invalid argument: \'" << argv[i] << "\'\n";
+				printHelp();
+				exit(1);
 			}
 		}
 	}
@@ -86,23 +92,24 @@ int main( int argc, char ** argv ) {
 		sprintf( lbpPts, "%d", pts );
 		sprintf( lbpRad, "%d", rad );
 
-		outFilename = fileName.substr( 0, fileName.length() - 4 ) +
-					"_LBP" + lbpType +
-					"_" + lbpRad +
-					"_" + lbpPts +
-					".png";
+		outFilename = fileName.substr( 0, fileName.length() - 4 ) + "_LBP" + lbpType + "_" + lbpRad
+					+ "_" + lbpPts;
 	}
 
 	if( outputHist ) {
 		// Calculate Fourier tranformed histogram
-		vector<double> hist = lbp.calcHist().getHist( false );
+		vector<double> hist = lbp.calcHist().getHist( normalizeHist );
 		ofstream ofs;
-		ofs.open( outFilename.c_str(), ios::out );
-		ofs << "testing\n";
-		cerr << "NotImplementedError:No support for saving histograms" << endl;
+		ofs.open( (outFilename + ".txt").c_str(), ios::out );
+		for( int i = 0; i < hist.size(); i++ ) {
+			if( i > 0 )	ofs << ", ";
+			ofs << hist[i];
+		}
+		ofs << endl;
+		ofs.close();
 	}
 	else {
-		lbp.saveLBPImage( outFilename );
+		lbp.saveLBPImage( outFilename + ".png" );
 	}
 
 	return 0;
