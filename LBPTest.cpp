@@ -24,6 +24,7 @@
 #include <ctime>
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "LBP.hpp"
 
@@ -63,34 +64,39 @@ void example_1( void ) {
  * Load an image, calculate LBP riu2 and then calculate the histogram on sub-regions of the image
  */
 void example_2( void ) {
+	clock_t startTime, endTime;
+
 	// Read an (RGB) image and convert to monochrome
-	cv::Mat img = imread( "../test_image_1.bmp", CV_LOAD_IMAGE_GRAYSCALE );
+	cv::Mat img = imread( "../test_image_1.bmp", 0 );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
-    
+    int w = img.cols, h = img.rows;
+
 
 	// Create an LBP instance of type rotation invariant uniform 2 using 8 support points
-	LBP lbp( 8, LBP_MAPPING_RIU2 );
+	LBP lbp( 8, LBP_MAPPING_HF );
+
 	// Calculate the descriptor image and get it
-	Mat lbpImg = lbp.calcLBP( img ).getLBPImage();
+	lbp.calcLBP( img, 1, true );
 
 	// Create a mask same size as the image
-	Mat mask( lbpImg.rows, lbpImg.cols, CV_8UC1 );
+	Mat mask( h, w, CV_8UC1 );
 
 	// Get the histogram for sub-images
 	for( int j = 0; j < 2; j++ ) {
 		for( int i = 0; i < 2; i++ ) {
 			// Reset mask. Will actually not allocate the data as it is
 			// 		same size as before.
-			mask = Mat::zeros(lbpImg.rows, lbpImg.cols, CV_8UC1);
+			mask = Mat::zeros(h, w, CV_8UC1);
 			// Get a sub-image (ROI) the size of 1/4 of the whole image
-			int x = lbpImg.cols / 2 * i;
-			int y = lbpImg.rows / 2 * j;
-			int w = lbpImg.cols/2-2;
-			int h = lbpImg.rows/2-2;
-			Mat roi( mask, Range(y,y+h), Range(x,x+w) );
+			int x = w / 2 * i;
+			int y = h / 2 * j;
+			int wH = w/2-2;
+			int hH = h/2-2;
+			Mat roi( mask, Range(y,y+hH), Range(x,x+wH) );
 			roi = Scalar(255);
 			// Calculate histogram for the ROI
+			startTime = clock();
 			vector<double> hist = lbp.calcHist( mask ).getHist();
 
 			// Print out the histogram values
@@ -101,6 +107,7 @@ void example_2( void ) {
 			cout << "]; " << endl;
 		}
 	}
+
 
 }
 
@@ -134,7 +141,7 @@ int main( int argc, char ** argv ) {
 	clock_t startTime, endTime;
 
 	startTime = clock();
-	example_1();
+	example_2();
 	endTime = clock();
 	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;

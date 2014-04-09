@@ -68,23 +68,47 @@ int main( int argc, char ** argv ) {
 			else {
 				cerr << "invalid argument: \'" << argv[i] << "\'\n";
 				printHelp();
-				exit(1);
+				exit( 1 );
 			}
 		}
 	}
 	fileName = argv[argc - 1];
 
 	// Read an (RGB) image and convert to monochrome
-	cv::Mat img = imread( fileName, 0 );
+	Mat imgOrg = imread( fileName, -1 );
 	// convert to double precision
-	img.convertTo( img, CV_64F );
-	//cout << "image w/h = " << img.rows << "/" << img.cols << " (" << img.rows * img.cols << ")"
-	//			<< endl;
+	imgOrg.convertTo( imgOrg, CV_64F );
 
-	// Create an LBP instance of type HF using 8 support points
-	LBP lbp( pts, lbp.strToType( mapping ) );
-	// Calculate the descriptor
-	lbp.calcLBP( img );
+	Mat lbpImg;
+	switch( imgOrg.channels() ) {
+		case 1:
+			lbpImg = Mat( imgOrg.size(), CV_8UC1, Scalar( 0 ) );
+			break;
+		case 3:
+			lbpImg = Mat( imgOrg.size(), CV_8UC3, Scalar( 0 ) );
+			break;
+		default:
+			cerr << "Unsupported number of image channels 1/3 only." << endl;
+			exit( 1 );
+	}
+
+	// Create an LBP instance of type "mapping" using "pts" support points
+	LBP lbp( pts, LBP::strToType( mapping ) );
+
+	for( int i = 0; i < imgOrg.channels(); i++ ) {
+		// Copy channel i
+		Mat img( imgOrg.size(), imgOrg.depth(), 1 );
+		const int from_to1[] = { i, 0 };
+		mixChannels( &imgOrg, 1, &img, 1, from_to1, 1 );
+
+		// Calculate the descriptor
+		lbp.calcLBP( img, rad, true );
+
+		// Copy lbp image
+		const int from_to2[] = {0, i};
+		Mat tmpImg = lbp.getLBPImage();
+		mixChannels( &tmpImg, 1, &lbpImg, 1, from_to2, 1 );
+	}
 
 	if( strcmp( outFilename.c_str(), "" ) == 0 ) {
 		char lbpType[1], lbpPts[2], lbpRad[2];
@@ -93,23 +117,24 @@ int main( int argc, char ** argv ) {
 		sprintf( lbpRad, "%d", rad );
 
 		outFilename = fileName.substr( 0, fileName.length() - 4 ) + "_LBP" + lbpType + "_" + lbpRad
-					+ "_" + lbpPts;
+		+ "_" + lbpPts + ".png";
 	}
 
 	if( outputHist ) {
 		// Calculate Fourier tranformed histogram
 		vector<double> hist = lbp.calcHist().getHist( normalizeHist );
 		ofstream ofs;
-		ofs.open( (outFilename + ".txt").c_str(), ios::out );
+		ofs.open( (outFilename.substr( 0, fileName.length() - 4 ) + ".txt").c_str(), ios::out );
 		for( int i = 0; i < hist.size(); i++ ) {
-			if( i > 0 )	ofs << ", ";
+			if( i > 0 ) ofs << ", ";
 			ofs << hist[i];
 		}
 		ofs << endl;
 		ofs.close();
 	}
 	else {
-		lbp.saveLBPImage( outFilename + ".png" );
+		imwrite( outFilename + ".png", lbpImg);
+//		lbp.saveLBPImage( outFilename + ".png" );
 	}
 
 	return 0;

@@ -217,7 +217,7 @@ bool LBP::saveMapping( string fileName ) {
     if( type == LBP_MAPPING_HF ) {
         ofs << "orbits ";
         for( int i = 0; i < orbits.size(); i++ ) {
-            for(int j = 0; j < orbits[i].size(); j++ ) {
+            for(int j = 0; j < (orbits[i]).size(); j++ ) {
                 ofs << orbits[i][j] << " ";
             }
             ofs << "-1 ";

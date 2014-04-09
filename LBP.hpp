@@ -38,6 +38,7 @@
 #include <fftw3.h>
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 #ifndef _LBP_H_
@@ -88,7 +89,7 @@ namespace lbp {
 		bool saveMapping( string fileName );
 		bool loadMapping( string fileName );
         
-        MappingType strToType( string s ) {
+        static MappingType strToType( string s ) {
             
             if( s.compare( "u2" ) == 0 )
                 return LBP_MAPPING_U2;
