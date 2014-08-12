@@ -23,10 +23,8 @@
 #include <iostream>
 #include <ctime>
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
 #include "LBP.hpp"
+#include "LBPGPU.cuh"
 
 using namespace lbp;
 
@@ -40,7 +38,8 @@ void example_1( void ) {
 	cv::Mat img = imread( "../test_image_1.pgm", 0 );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
-	cout << "image w/h = " << img.rows << "/" << img.cols << " (" << img.rows*img.cols << ")" << endl;
+	cout << "image w/h = " << img.rows << "/" << img.cols << " (" << img.rows * img.cols << ")"
+				<< endl;
 
 	// Create an LBP instance of type HF using 8 support points
 	LBP lbp( 8, LBP_MAPPING_NONE );
@@ -70,8 +69,7 @@ void example_2( void ) {
 	cv::Mat img = imread( "../test_image_1.bmp", 0 );
 	// convert to double precision
 	img.convertTo( img, CV_64F );
-    int w = img.cols, h = img.rows;
-
+	int w = img.cols, h = img.rows;
 
 	// Create an LBP instance of type rotation invariant uniform 2 using 8 support points
 	LBP lbp( 8, LBP_MAPPING_HF );
@@ -87,14 +85,14 @@ void example_2( void ) {
 		for( int i = 0; i < 2; i++ ) {
 			// Reset mask. Will actually not allocate the data as it is
 			// 		same size as before.
-			mask = Mat::zeros(h, w, CV_8UC1);
+			mask = Mat::zeros( h, w, CV_8UC1 );
 			// Get a sub-image (ROI) the size of 1/4 of the whole image
 			int x = w / 2 * i;
 			int y = h / 2 * j;
-			int wH = w/2-2;
-			int hH = h/2-2;
-			Mat roi( mask, Range(y,y+hH), Range(x,x+wH) );
-			roi = Scalar(255);
+			int wH = w / 2 - 2;
+			int hH = h / 2 - 2;
+			Mat roi( mask, Range( y, y + hH ), Range( x, x + wH ) );
+			roi = Scalar( 255 );
 			// Calculate histogram for the ROI
 			startTime = clock();
 			vector<double> hist = lbp.calcHist( mask ).getHist();
@@ -108,7 +106,6 @@ void example_2( void ) {
 		}
 	}
 
-
 }
 
 /** 
@@ -117,36 +114,81 @@ void example_2( void ) {
  */
 void example_3( void ) {
 	clock_t startTime, endTime;
-	
-	LBP lbp( 16, LBP_MAPPING_U2 );
-    cout << lbp.toString() << endl;
-    startTime = clock();
-    lbp.saveMapping( "mapping.txt" );
-	endTime = clock();
-	cout << "save took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
-	<< endl;
-	
-    LBP lbp2;
-    startTime = clock();
-    lbp2.loadMapping("mapping.txt");
-    endTime = clock();
-    cout << lbp2.toString() << endl;
-    cout << "load took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
-    << endl;
 
-	
+	LBP lbp( 16, LBP_MAPPING_U2 );
+	cout << lbp.toString() << endl;
+	startTime = clock();
+	lbp.saveMapping( "mapping.txt" );
+	endTime = clock();
+	cout << "save took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s" << endl;
+
+	LBP lbp2;
+	startTime = clock();
+	lbp2.loadMapping( "mapping.txt" );
+	endTime = clock();
+	cout << lbp2.toString() << endl;
+	cout << "load took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s" << endl;
+
 }
+
+void example_4( void ) {
+#if 0
+	unsigned char pixels[] = {78, 87, 84, 81, 92, 98,
+				 75, 86, 82, 74, 82, 90,
+				 77, 87, 85, 76, 74, 80,
+				 91, 98, 91, 81, 77, 79,
+				 90, 95, 85, 80, 84, 88,
+				 91, 91, 83, 79, 86, 90 };
+	int w = 6, h = 6;
+	Mat img( h, w, CV_8U, pixels );
+#else
+	Mat img = imread( "../test_image_1.png", 0 );
+#endif
+
+	img.convertTo( img, CV_64F );
+//	for( int j = 0; j < img.rows; ++j ) {
+//		for( int i = 0; i < img.cols; ++i ) {
+//			printf( "%3d ", (int) img.at<double>( j, i ) );
+//		}
+//		printf( "\n" );
+//	}
+	clock_t startTime, endTime;
+
+	// Create an LBP instance of type HF using 8 support points
+	LBP lbp( 8, LBP_MAPPING_NONE );
+	// Calculate the descriptor
+	startTime = clock();
+	lbp.calcGPU( img );
+	endTime = clock();
+
+	Mat lbpImg = lbp.getLBPImage();
+
+	cout << "Example took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+				<< endl;
+#if 0
+	for( int j = 0; j < lbpImg.rows; ++j ) {
+		for( int i = 0; i < lbpImg.cols; ++i ) {
+			printf( "%3d ", (int) lbpImg.at<unsigned char>( j, i ) );
+		}
+		printf( "\n" );
+	}
+#elseif 0
+	namedWindow("res");
+	imshow("res", lbpImg);
+	waitKey(0);
+#endif
+}
+
 int main( int argc, char ** argv ) {
 
 	clock_t startTime, endTime;
 
 	startTime = clock();
-	example_2();
+	example_4();
 	endTime = clock();
-	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+	cout << "Example took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;
-    
-    
+
 	return 0;
 }
 

@@ -373,7 +373,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 		int fx = floor( x );
 		int cx = ceil( x );
 		int rx = round( x );
-        
+
 		// Check if interpolation is needed.
 		if( (fabs( x - rx ) < 1e-6) && (fabs( y - ry ) < 1e-6) ) {
 			// Interpolation is not needed, use original data types
@@ -392,20 +392,21 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 			double w2 = tx * (1 - ty);
 			double w3 = (1 - tx) * ty;
 			double w4 = tx * ty;
-            
+
 			// Compute interpolated pixel values
             //			N = w1 * d_img( Rect( fx, fy, dx, dy ) ) + w2 * d_img( Rect( cx, fy, dx, dy ) )
             //						+ w3 * d_img( Rect( fx, cy, dx, dy ) )
             //						+ w4 * d_img( Rect( cx, cy, dx, dy ) );
 			// The below operations are about 20% faster than the above
-			addWeighted(
-						d_img( Rect( fx, fy, dx, dy ) ), w1, d_img( Rect( cx, fy, dx, dy ) ), w2, 0,
-						N );
+			addWeighted( d_img( Rect( fx, fy, dx, dy ) ), w1,
+						 d_img( Rect( cx, fy, dx, dy ) ), w2, 0, N );
 			addWeighted( d_img( Rect( fx, cy, dx, dy ) ), w3, N, 1, 0, N );
 			addWeighted( d_img( Rect( cx, cy, dx, dy ) ), w4, N, 1, 0, N );
             
 			compare( N, d_C, D, CMP_GE ); // D = (N >= C);
 		}
+
+
 		// Update the result matrix.
 		double v = pow( 2., i ) / 255.; // Divide by 255 because D is 0/255 rather than 0/1
 		D.convertTo( D, CV_64F );

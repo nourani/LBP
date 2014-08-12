@@ -37,9 +37,11 @@
 
 #include <fftw3.h>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2\imgproc\imgproc.hpp>
 
+#include "LBPGPU.cuh"
 
 #ifndef _LBP_H_
 #define _LBP_H_
@@ -110,6 +112,12 @@ namespace lbp {
 		/**
 		 * Descriptor methods
 		 */
+        void calcGPU( Mat img, double radius = 1. ) {
+        	unsigned char * src;
+        	unsigned char * dst;
+//        	LBPMapping mapping;
+//        	calcLBPGPU( src, dst, 10, 10, &mapping );
+        }
 		LBP & calcLBP( Mat img, double radius = 1., bool borderCopy=false );
 		Mat getLBPImage( void ) const {
 			return lbpImage;
