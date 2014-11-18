@@ -10,12 +10,7 @@ project(LBP)
 find_path(FFTW_INCLUDE_DIR fftw3.h  ${FFTW_INCLUDE_DIRS})
 find_library(FFTW_LIBRARY fftw3 ${FFTW_LIBRARY_DIRS})
 find_package(OpenCV REQUIRED)
-find_package(CUDA REQUIRED)
 
-IF(APPLE)
-	SET(CUDA_HOST_COMPILER /usr/bin/clang CACHE FILEPATH "Setting clang as the CUDA compiler" FORCE)
-	SET(CUDA_NVCC_FLAGS "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++; -arch=sm_20" CACHE STRING "Setting NVCC compiler flags" FORCE)
-ENDIF()
 
 INCLUDE_DIRECTORIES(
         ./
@@ -27,14 +22,6 @@ LINK_DIRECTORIES(
 	/usr/local/cuda/lib/
 	/opt/local/lib
 )
-
-CUDA_ADD_EXECUTABLE( LBPGPU
-	LBPGPU.cu
-)
-TARGET_LINK_LIBRARIES(LBPGPU
-	${CUDA_LIBRARIES} nppc nppi X11
-)
-
 
 add_library(LBP
     SHARED
@@ -58,6 +45,27 @@ add_executable(LBPMain
 target_link_libraries(LBPMain
 	LBP
 )
+
+
+option(BUILD_LBPGPU "Build GPU module" OFF)
+if(BUILD_LBPGPU)
+	find_package(CUDA REQUIRED)
+
+	IF(APPLE)
+		SET(CUDA_HOST_COMPILER /usr/bin/clang CACHE FILEPATH "Setting clang as the CUDA compiler" FORCE)
+		SET(CUDA_NVCC_FLAGS "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++; -arch=sm_20" CACHE STRING "Setting NVCC compiler flags" FORCE)
+	ENDIF(APPLE)
+
+	CUDA_ADD_EXECUTABLE( LBPGPU
+		LBPGPU.cu
+	)
+	TARGET_LINK_LIBRARIES(LBPGPU
+		${CUDA_LIBRARIES} nppc nppi X11
+	)
+
+endif(BUILD_LBPGPU)
+
+
 
 option(BUILD_PYTHON "Build SWIG/Python module" OFF)
 if(BUILD_PYTHON)
