@@ -76,11 +76,18 @@ endif(BUILD_PYTHON)
 ###############################################################################
 ## 								Install
 # Binaries and libs
-install(TARGETS LBP LBPGPU LBPMain
+install(TARGETS LBP LBPMain
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib
 #	ARCHIVE DESTINATION lib
 )
+if(BUILD_LBPGPU)
+install(TARGETS LBPGPU
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+#	ARCHIVE DESTINATION lib
+)
+endif(BUILD_LBPGPU)
 # Header files
 install(FILES LBP.hpp
 	DESTINATION include 
