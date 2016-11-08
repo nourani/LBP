@@ -63,6 +63,7 @@ void example_1( void ) {
  * Load an image, calculate LBP riu2 and then calculate the histogram on sub-regions of the image
  */
 void example_2( void ) {
+    cout << endl << "Example 2..." << endl;
 	clock_t startTime, endTime;
 
 	// Read an (RGB) image and convert to monochrome
@@ -113,6 +114,7 @@ void example_2( void ) {
  *	larger mappings (24 pts) which can takes many seconds to calculate.
  */
 void example_3( void ) {
+    cout << endl << "Example 3..." << endl;
 	clock_t startTime, endTime;
 
 	LBP lbp( 16, LBP_MAPPING_U2 );
@@ -132,6 +134,7 @@ void example_3( void ) {
 }
 
 void example_4( void ) {
+    cout << endl << "Example 4..." << endl;
 #if 0
 	unsigned char pixels[] = {78, 87, 84, 81, 92, 98,
 				 75, 86, 82, 74, 82, 90,
@@ -184,9 +187,27 @@ int main( int argc, char ** argv ) {
 	clock_t startTime, endTime;
 
 	startTime = clock();
+	example_1();
+	endTime = clock();
+	cout << "Example 1 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+				<< endl << endl;
+
+	startTime = clock();
+	example_2();
+	endTime = clock();
+	cout << "Example 2 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+				<< endl << endl;
+
+	startTime = clock();
+	example_3();
+	endTime = clock();
+	cout << "Example 3 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+				<< endl << endl;
+
+	startTime = clock();
 	example_4();
 	endTime = clock();
-	cout << "Example took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
+	cout << "Example 4 took " << double( endTime - startTime ) / double( CLOCKS_PER_SEC ) << "s"
 				<< endl;
 
 	return 0;
