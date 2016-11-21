@@ -60,7 +60,7 @@ if(BUILD_LBPGPU)
 		LBPGPU.cu
 	)
 	TARGET_LINK_LIBRARIES(LBPGPU
-		${CUDA_LIBRARIES} nppc nppi X11
+		${CUDA_LIBRARIES} nppc nppi X11 pthread
 	)
 
 endif(BUILD_LBPGPU)
