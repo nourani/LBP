@@ -62,7 +62,7 @@ if(BUILD_LBPGPU)
 
 	IF(APPLE)
 		SET(CUDA_HOST_COMPILER /usr/bin/clang CACHE FILEPATH "Setting clang as the CUDA compiler" FORCE)
-		SET(CUDA_NVCC_FLAGS "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++; -arch=sm_50" CACHE STRING "Setting NVCC compiler flags" FORCE)
+		SET(CUDA_NVCC_FLAGS "-Xcompiler -stdlib=libstdc++; -Xlinker -stdlib=libstdc++; -arch=sm_20" CACHE STRING "Setting NVCC compiler flags" FORCE)
 	ENDIF(APPLE)
 
 	CUDA_ADD_EXECUTABLE( LBPGPU
