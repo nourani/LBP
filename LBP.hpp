@@ -26,12 +26,17 @@
  *
  */
 
+// cmath header must be first in MSVC otherwise M_PI is undefined
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif/*_MSC_VER*/
+#include <cmath>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <climits>
-#include <cmath>
 #include <complex>
 #include <string>
 

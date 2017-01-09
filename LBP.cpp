@@ -309,14 +309,16 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 		copyMakeBorder( d_img, tmp, radius, radius, radius, radius, BORDER_WRAP, Scalar(0) );
 		d_img = tmp.clone();
 	}
-	    
-	double spoints[samples][2];
+	        
+    const unsigned int nSamples = samples;
+	double** spoints = new double*[nSamples];
 	double a = 2 * M_PI / samples;
 	double miny = +INT_MAX;
 	double maxy = -INT_MAX;
 	double minx = +INT_MAX;
 	double maxx = -INT_MAX;
 	for( int i = 0; i < samples; i++ ) {
+        spoints[i] = new double[2];
 		spoints[i][0] = +radius * cos( double( i * a ) );
 		spoints[i][1] = -radius * sin( double( i * a ) );
         
@@ -405,7 +407,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
             
 			compare( N, d_C, D, CMP_GE ); // D = (N >= C);
 		}
-
+        delete[] spoints[i];
 
 		// Update the result matrix.
 		double v = pow( 2., i ) / 255.; // Divide by 255 because D is 0/255 rather than 0/1
@@ -413,6 +415,7 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 		result = result + (v * D);
 		
 	}
+    delete[] spoints;
 	result.convertTo( result, CV_8U );
     //	endTime = clock();
     //	times.push_back( (endTime - startTime) );

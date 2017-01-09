@@ -14,6 +14,7 @@ find_package(OpenCV REQUIRED)
 
 INCLUDE_DIRECTORIES(
         ./
+        ${FFTW_INCLUDE_DIR}
         /usr/local/include
         /opt/local/include
 )
@@ -24,12 +25,20 @@ LINK_DIRECTORIES(
 )
 
 add_library(LBP
-    SHARED
+    STATIC
 	LBP.cpp 
 )
-target_link_libraries(LBP
-	${OpenCV_LIBS} ${FFTW_LIBRARY}  m
-)
+# The standard math functions are directly handled by MSVCR (ex: 'msvcr90.dll')
+# 'm.lib' will cause an error if included as target link 
+IF(MSVC)
+    target_link_libraries(LBP
+        ${OpenCV_LIBS} ${FFTW_LIBRARY}    
+    )
+ELSE()
+    target_link_libraries(LBP
+        ${OpenCV_LIBS} ${FFTW_LIBRARY}  m    
+    )
+ENDIF(MSVC)
 
 
 add_executable(LBPTest
@@ -79,13 +88,13 @@ endif(BUILD_PYTHON)
 install(TARGETS LBP LBPMain
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib
-#	ARCHIVE DESTINATION lib
+	ARCHIVE DESTINATION lib
 )
 if(BUILD_LBPGPU)
 install(TARGETS LBPGPU
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib
-#	ARCHIVE DESTINATION lib
+	ARCHIVE DESTINATION lib
 )
 endif(BUILD_LBPGPU)
 # Header files
