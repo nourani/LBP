@@ -416,7 +416,6 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
 		
 	}
     delete[] spoints;
-	result.convertTo( result, CV_8U );
     //	endTime = clock();
     //	times.push_back( (endTime - startTime) );
     //	cout << "lbp calc took " << times.back() << " cycles" << endl;
@@ -424,12 +423,13 @@ LBP & LBP::calcLBP( Mat d_img, double radius, bool borderCopy ) {
     //	startTime = clock();
 	// Apply mapping if it is defined
 	if( type != LBP_MAPPING_NONE ) {
-		MatIterator_<unsigned char> it = result.begin<unsigned char>(), it_end = result.end<
-        unsigned char>();
+		MatIterator_<double> it = result.begin<double>(), it_end = result.end<
+        double>();
 		for( ; it != it_end; ++it ) {
 			*it = table[(*it)];
 		}
 	}
+	result.convertTo( result, CV_8U );
     //	endTime = clock();
     //	times.push_back( (endTime - startTime) );
     //	cout << "mapping took " << times.back() << " cycles" << endl;
